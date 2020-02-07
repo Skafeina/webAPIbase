@@ -1,0 +1,12 @@
+﻿CREATE PROC TGS_SP_AltTodoItem
+    @NAME          VARCHAR (100) ,
+    @ISCOMPLETED     INT,
+	@Id           INT
+AS
+BEGIN
+	UPDATE TODOITEMS 
+	SET 
+		NAME = @NAME, 
+		ISCOMPLETED = @ISCOMPLETED
+	WHERE Id = @Id
+END
