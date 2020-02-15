@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TodoLayers.DML;
+using System.Data.SqlClient;
 
 namespace TodoLayers.DAL
 {
@@ -12,7 +9,7 @@ namespace TodoLayers.DAL
     {
         internal List<TodoItem> Pesquisa()
         {
-            List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
+            List<SqlParameter> parametros = new List<SqlParameter>();
 
 
             DataSet ds = base.Consultar("TGS_SP_PesTodoItem", parametros);
@@ -20,12 +17,13 @@ namespace TodoLayers.DAL
 
             return tdi;
         }
+
         internal long Incluir(TodoItem item)
         {
-            List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
+            List<SqlParameter> parametros = new List<SqlParameter>();
 
-            parametros.Add(new System.Data.SqlClient.SqlParameter("Name", item.Name));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("IsCompleted", item.IsCompleted));
+            parametros.Add(new SqlParameter("Name", item.Name));
+            parametros.Add(new SqlParameter("IsCompleted", item.IsCompleted));
 
             DataSet ds = base.Consultar("TGS_SP_IncTodoItem", parametros);
             long ret = 0;
@@ -33,24 +31,27 @@ namespace TodoLayers.DAL
                 long.TryParse(ds.Tables[0].Rows[0][0].ToString(), out ret);
             return ret;
         }
-        internal void Alterar(DML.TodoItem item)
-        {
-            List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
 
-            parametros.Add(new System.Data.SqlClient.SqlParameter("Name", item.Name));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("IsCompleted", item.IsCompleted));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("Id", item.Id));
+        internal void Alterar(TodoItem item)
+        {
+            List<SqlParameter> parametros = new List<SqlParameter>();
+
+            parametros.Add(new SqlParameter("Name", item.Name));
+            parametros.Add(new SqlParameter("IsCompleted", item.IsCompleted));
+            parametros.Add(new SqlParameter("Id", item.Id));
 
             base.Executar("TGS_SP_AltTodoItem", parametros);
         }
-        internal void Deletar(DML.TodoItem item)
-        {
-            List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
 
-            parametros.Add(new System.Data.SqlClient.SqlParameter("Id", item.Id));
+        internal void Deletar(TodoItem item)
+        {
+            List<SqlParameter> parametros = new List<SqlParameter>();
+
+            parametros.Add(new SqlParameter("Id", item.Id));
 
             base.Executar("TGS_SP_DelTodoItem", parametros);
         }
+
         private List<TodoItem> Converter(DataSet ds)
         {
             List<TodoItem> lista = new List<TodoItem>();

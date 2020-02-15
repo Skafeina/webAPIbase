@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -30,10 +31,15 @@ namespace TodoLayers.DAL
             foreach (var item in parametros)
                 comando.Parameters.Add(item);
 
-            conexao.Open();
+            
             try
             {
+                conexao.Open();
                 comando.ExecuteNonQuery();
+            }
+            catch(Exception)
+            {
+                throw;
             }
             finally
             {
@@ -55,11 +61,15 @@ namespace TodoLayers.DAL
 
             SqlDataAdapter adapter = new SqlDataAdapter(comando);
             DataSet ds = new DataSet();
-            conexao.Open();
 
             try
             {
+                conexao.Open();
                 adapter.Fill(ds);
+            }
+            catch (Exception)
+            {
+                throw;
             }
             finally
             {
