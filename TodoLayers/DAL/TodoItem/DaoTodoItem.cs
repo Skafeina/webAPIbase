@@ -25,7 +25,7 @@ namespace TodoLayers.DAL
             List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
 
             parametros.Add(new System.Data.SqlClient.SqlParameter("Name", item.Name));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("IsCompleted", item.IsComplete));
+            parametros.Add(new System.Data.SqlClient.SqlParameter("IsCompleted", item.IsCompleted));
 
             DataSet ds = base.Consultar("TGS_SP_IncTodoItem", parametros);
             long ret = 0;
@@ -38,8 +38,8 @@ namespace TodoLayers.DAL
             List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
 
             parametros.Add(new System.Data.SqlClient.SqlParameter("Name", item.Name));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("IsCompleted", item.IsComplete));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("ID", item.Id));
+            parametros.Add(new System.Data.SqlClient.SqlParameter("IsCompleted", item.IsCompleted));
+            parametros.Add(new System.Data.SqlClient.SqlParameter("Id", item.Id));
 
             base.Executar("TGS_SP_AltTodoItem", parametros);
         }
@@ -61,7 +61,7 @@ namespace TodoLayers.DAL
                     TodoItem tdi = new TodoItem();
                     tdi.Id = row.Field<int>("Id");
                     tdi.Name = row.Field<string>("Name");
-                    tdi.IsComplete = row.Field<int>("IsCompleted");
+                    tdi.IsCompleted = row.Field<int>("IsCompleted");
                     lista.Add(tdi);
                 }
             }

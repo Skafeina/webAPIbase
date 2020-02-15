@@ -36,7 +36,7 @@ namespace TodoWinForm
             object retorno;
 
             _item.Name = txtTodo.Text;
-            _item.IsComplete = cbbCompleted.SelectedIndex == 0 ? true : false;
+            _item.IsCompleted = cbbCompleted.SelectedIndex == 0 ? true : false;
 
             var parametros = JsonConvert.SerializeObject(_item, Formatting.Indented);
             HttpContent Content = new StringContent(parametros, Encoding.UTF8, "application/json");
@@ -49,7 +49,7 @@ namespace TodoWinForm
         private void frmEdit_Load(object sender, EventArgs e)
         {
             txtTodo.Text = _item.Name;
-            cbbCompleted.SelectedIndex = _item.IsComplete == true ? 0 : 1; 
+            cbbCompleted.SelectedIndex = _item.IsCompleted == true ? 0 : 1; 
         }
 
         private string HTTPStringUpdate(string uri, HttpContent content)

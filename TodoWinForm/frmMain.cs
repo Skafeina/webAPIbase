@@ -33,7 +33,7 @@ namespace TodoWinForm
         {
             string mensagem = string.Empty;
 
-            TodoItem item = new TodoItem() { Name = txtTodo.Text, IsComplete = cbbCompleted.SelectedIndex == 0 ? true : false };
+            TodoItem item = new TodoItem() { Name = txtTodo.Text, IsCompleted = cbbCompleted.SelectedIndex == 0 ? true : false };
             var parametros = JsonConvert.SerializeObject(item, Formatting.Indented);
             Content = new StringContent(parametros, Encoding.UTF8, "application/json");
             Uri = API + @"/api/TodoItems/" + (int)BoTodoItem.Rotas.Incluir;
@@ -70,7 +70,7 @@ namespace TodoWinForm
                 {
                     Id = long.Parse(dgvTodoItems.CurrentRow.Cells[0].Value.ToString()),
                     Name = dgvTodoItems.CurrentRow.Cells[1].Value.ToString(),
-                    IsComplete = bool.Parse(dgvTodoItems.CurrentRow.Cells[2].Value.ToString())
+                    IsCompleted = bool.Parse(dgvTodoItems.CurrentRow.Cells[2].Value.ToString())
                 };
 
                 frmEdit update = new frmEdit(itemSelected);
