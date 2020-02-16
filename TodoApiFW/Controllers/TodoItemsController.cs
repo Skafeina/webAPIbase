@@ -63,7 +63,7 @@ namespace TodoApiFW.Controllers
                 todoItem.Id = boTdi.Incluir(new TodoLayers.DML.TodoItem()
                 {
                     Name = todoItem.Name,
-                    IsCompleted = todoItem.IsComplete == true ? 1 : 0
+                    IsCompleted = todoItem.IsCompleted == true ? 1 : 0
                 });
                 return Json("\nTarefa: " + todoItem.Name + "\nAdicionado com sucesso!");
             }
@@ -97,7 +97,7 @@ namespace TodoApiFW.Controllers
             {
                 tdi.Id = titem.Id;
                 tdi.Name = titem.Name;
-                tdi.IsCompleted = titem.IsComplete == true ? 1 : 0;
+                tdi.IsCompleted = titem.IsCompleted == true ? 1 : 0;
                 boTdi.Alterar(tdi);
                 return Json("\nTarefa: " + titem.Name + "\nAtualizada com sucesso!");
             }
@@ -130,7 +130,7 @@ namespace TodoApiFW.Controllers
             {
                 tdi.Id = titem.Id;
                 tdi.Name = titem.Name;
-                tdi.IsCompleted = titem.IsComplete == true ? 1 : 0;
+                tdi.IsCompleted = titem.IsCompleted == true ? 1 : 0;
                 boTdi.Deletar(tdi);
                 return Json("\nTarefa: " + titem.Name + "\nDeletada com sucesso!");
             }

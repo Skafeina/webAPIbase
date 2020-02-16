@@ -1,0 +1,4 @@
+C:\Users\RafaDias\Documents\Git\TodoLayers\bin\Debug\TodoLayers.dll
+C:\Users\RafaDias\Documents\Git\TodoLayers\bin\Debug\TodoLayers.pdb
+C:\Users\RafaDias\Documents\Git\TodoLayers\obj\Debug\TodoLayers.dll
+C:\Users\RafaDias\Documents\Git\TodoLayers\obj\Debug\TodoLayers.pdb

@@ -1,0 +1,15 @@
+C:\Users\RafaDias\Documents\Git\TodoWinForm\bin\Debug\TodoWinForm.exe.config
+C:\Users\RafaDias\Documents\Git\TodoWinForm\bin\Debug\TodoWinForm.exe
+C:\Users\RafaDias\Documents\Git\TodoWinForm\bin\Debug\TodoWinForm.pdb
+C:\Users\RafaDias\Documents\Git\TodoWinForm\bin\Debug\Newtonsoft.Json.dll
+C:\Users\RafaDias\Documents\Git\TodoWinForm\bin\Debug\TodoLayers.dll
+C:\Users\RafaDias\Documents\Git\TodoWinForm\bin\Debug\TodoLayers.pdb
+C:\Users\RafaDias\Documents\Git\TodoWinForm\bin\Debug\Newtonsoft.Json.xml
+C:\Users\RafaDias\Documents\Git\TodoWinForm\obj\Debug\TodoWinForm.csprojAssemblyReference.cache
+C:\Users\RafaDias\Documents\Git\TodoWinForm\obj\Debug\TodoWinForm.frmEdit.resources
+C:\Users\RafaDias\Documents\Git\TodoWinForm\obj\Debug\TodoWinForm.frmMain.resources
+C:\Users\RafaDias\Documents\Git\TodoWinForm\obj\Debug\TodoWinForm.Properties.Resources.resources
+C:\Users\RafaDias\Documents\Git\TodoWinForm\obj\Debug\TodoWinForm.csproj.GenerateResource.cache
+C:\Users\RafaDias\Documents\Git\TodoWinForm\obj\Debug\TodoWinForm.csproj.CopyComplete
+C:\Users\RafaDias\Documents\Git\TodoWinForm\obj\Debug\TodoWinForm.exe
+C:\Users\RafaDias\Documents\Git\TodoWinForm\obj\Debug\TodoWinForm.pdb
