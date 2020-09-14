@@ -1,7 +1,0 @@
-﻿CREATE PROC TGS_SP_DelTodoItem
-	@Id           INT
-AS
-BEGIN
-	DELETE FROM TODOITEMS 	
-	WHERE Id = @Id
-END

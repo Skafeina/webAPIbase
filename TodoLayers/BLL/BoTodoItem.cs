@@ -1,34 +1,72 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using TodoLayers.DAL;
+using TodoLayers.DML;
 
 namespace TodoLayers.BLL
 {
+    /// <summary>
+    /// Classe de regras de negócio entre o acesso aos dados e a chamada do controlador.
+    /// Trata o retorno do banco, converte para Json e monta frases de retorno.
+    /// </summary>
     public class BoTodoItem
     {
-        public List<DML.TodoItem> Pesquisa()
+        /// <summary>
+        /// Método que busca as tarefas do banco e formata o retorno de acordo.
+        /// </summary>
+        /// <returns>Uma lista de tarefas.</returns>
+        public JObject ListaTodoItem()
         {
-            DAL.DaoTodoItem tdi = new DAL.DaoTodoItem();
-            return tdi.Pesquisa();
+            DaoTodoItem tdi = new DaoTodoItem();
+
+            List<TodoItem> itens = tdi.Pesquisa();
+            string jsonRetorno;
+
+            if (itens == null)
+                jsonRetorno = JsonConvert.SerializeObject(new { Retorno = "Não há dados armazenados." }, Formatting.None);
+            else
+                jsonRetorno = JsonConvert.SerializeObject(new { TodoItems = itens }, Formatting.None);
+            
+            return JObject.Parse(jsonRetorno);
         }
-        public long Incluir(DML.TodoItem item)
+
+        /// <summary>
+        /// Método que trata as informações de uma tarefa para inclusão no banco de dados.
+        /// </summary>
+        /// <param name="jsonItem">Item tarefa formatado em Json.</param>
+        /// <returns>Id inserido no banco.</returns>
+        public long Incluir(string jsonItem)
         {
-            DAL.DaoTodoItem tdi = new DAL.DaoTodoItem();
+            DaoTodoItem tdi = new DaoTodoItem();
+            TodoItem item = JsonConvert.DeserializeObject<TodoItem>(jsonItem);
             return tdi.Incluir(item);
-        } 
-        public void Alterar(DML.TodoItem item)
-        {
-            DAL.DaoTodoItem tdi = new DAL.DaoTodoItem();
-            tdi.Alterar(item);
         }
-        public void Deletar(DML.TodoItem item)
+
+        /// <summary>
+        /// Método que trata as informações de uma tarefa para alteração no banco de dados.
+        /// </summary>
+        /// <param name="jsonItem">Item tarefa formatado em Json.</param>
+        /// <returns>Uma frase informativa.</returns>
+        public JObject Alterar(string jsonItem)
         {
-            DAL.DaoTodoItem tdi = new DAL.DaoTodoItem();
-            tdi.Deletar(item);
+            DaoTodoItem tdi = new DaoTodoItem();
+            TodoItem item = JsonConvert.DeserializeObject<TodoItem>(jsonItem);
+            string retorno = tdi.Alterar(item);
+            return JObject.Parse(JsonConvert.SerializeObject(new { Retorno = retorno }, Formatting.None));
         }
-        public enum Rotas{
-            Pesquisar = 1,
-            Incluir = 2,
-            Alterar = 3,
-            Deletar = 4
-        };
+
+        /// <summary>
+        /// Método que trata as informações de uma tarefa para remoção no banco de dados.
+        /// </summary>
+        /// <param name="jsonItem">Item tarefa formatado em Json.</param>
+        /// <returns>Uma frase informativa.</returns>
+        public JObject Deletar(string jsonItem)
+        {
+            DaoTodoItem tdi = new DaoTodoItem();
+            TodoItem item = JsonConvert.DeserializeObject<TodoItem>(jsonItem);
+            string retorno = tdi.Deletar(item);
+            return JObject.Parse(JsonConvert.SerializeObject(new { Retorno = retorno }, Formatting.None));
+        }
     }
 }

@@ -105,6 +105,7 @@
             this.ClientSize = new System.Drawing.Size(228, 192);
             this.Controls.Add(this.groupBox1);
             this.Name = "frmEdit";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Update To-Do";
             this.Load += new System.EventHandler(this.frmEdit_Load);
             this.groupBox1.ResumeLayout(false);

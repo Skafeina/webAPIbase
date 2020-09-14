@@ -52,6 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\BoTodoItem.cs" />
+    <Compile Include="Classes\HttpSuporte\HttpExecute.cs" />
     <Compile Include="Classes\TodoItem.cs" />
     <Compile Include="frmEdit.cs">
       <SubType>Form</SubType>
@@ -99,11 +101,6 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TodoLayers\TodoLayers.csproj">
-      <Project>{dcd48e82-9d16-46fb-b988-5457848263a9}</Project>
-      <Name>TodoLayers</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

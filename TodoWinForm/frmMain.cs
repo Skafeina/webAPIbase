@@ -4,22 +4,17 @@ using System.ComponentModel;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
-using System.Configuration;
 using System.Net.Http;
 using Newtonsoft.Json;
 using TodoWinForm.Classes;
-using TodoLayers.BLL;
+using System.Linq;
 
 namespace TodoWinForm
 {
     public partial class frmMain : Form
     {
-        //Lista que receberá o conteúdo do método GetTodoItems no Controller
         List<TodoItem> todoItems = new List<TodoItem>();
         ConvertListToDataTable<TodoItem> ConvertItemData = new ConvertListToDataTable<TodoItem>();
-        HttpContent Content;
-        string Uri;
-        public static string API = ConfigurationManager.AppSettings["BaseAddress"];
         public frmMain()
         {
             InitializeComponent();
@@ -27,187 +22,67 @@ namespace TodoWinForm
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            string mensagem = string.Empty;
+            try
+            {
+                TodoItem item = new TodoItem()
+                {
+                    Name = txtTodo.Text,
+                    IsCompleted = cbbCompleted.SelectedIndex == 0 ? true : false
+                };
 
-            TodoItem item = new TodoItem() { Name = txtTodo.Text, IsCompleted = cbbCompleted.SelectedIndex == 0 ? true : false };
-            var parametros = JsonConvert.SerializeObject(item, Formatting.Indented);
-            Content = new StringContent(parametros, Encoding.UTF8, "application/json");
-            Uri = API + @"/api/TodoItems/" + (int)BoTodoItem.Rotas.Incluir;
+                string json = JsonConvert.SerializeObject(item, Formatting.None);
 
-            mensagem = HTTPString(Content, Uri);
+                item.Id = new BoTodoItem().InsereTodoItem(item);
 
-            CarregaDgvTodoItem();
-            MessageBox.Show(mensagem, "Teste", MessageBoxButtons.OK);
+                CarregaDgvTodoItem();
+                MessageBox.Show("Tarefa incluída com sucesso.\nId: " + item.Id, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void btnDel_Click(object sender, EventArgs e)
         {
-            object retorno;
+            try
+            {
+                TodoItem itemSelecionado = todoItems.Find(i => i.Id == (long)dgvTodoItems.CurrentRow.Cells[0].Value);
+                string mensagem = new BoTodoItem().ExcluiTodoItem(itemSelecionado);
 
-            string parametros = JsonConvert.SerializeObject(todoItems[dgvTodoItems.CurrentRow.Index], Formatting.Indented);
-            Content = new StringContent(parametros, Encoding.UTF8, "application/json");
-            Uri = API + @"/api/TodoItems/" + (int)BoTodoItem.Rotas.Deletar;
-
-            retorno = HTTPString(Content, Uri);
-
-            CarregaDgvTodoItem();
-            //MessageBox.Show(retorno.ToString(), "Atenção", MessageBoxButtons.OK);
+                CarregaDgvTodoItem();
+                MessageBox.Show(mensagem, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+           
         }
         private void frmMain_Load(object sender, EventArgs e)
         {
-            CarregaDgvTodoItem();
-            //Se houver algum item selecionado no dataGridView, o botão para deleção é habilitado.
-            btnDel.Enabled = VerificaItemSelDgv();
+            try
+            {
+                CarregaDgvTodoItem();
+                //Se houver algum item selecionado no dataGridView, o botão para deleção é habilitado.
+                btnDel.Enabled = VerificaItemSelDgv();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            
         }
         private void dgvTodoItems_DoubleClick(object sender, EventArgs e)
         {
             if (VerificaItemSelDgv())
             {
-                TodoItem itemSelected = new TodoItem()
-                {
-                    Id = long.Parse(dgvTodoItems.CurrentRow.Cells[0].Value.ToString()),
-                    Name = dgvTodoItems.CurrentRow.Cells[1].Value.ToString(),
-                    IsCompleted = bool.Parse(dgvTodoItems.CurrentRow.Cells[2].Value.ToString())
-                };
+                TodoItem itemSelecionado = todoItems.Find(i => i.Id == (long)dgvTodoItems.CurrentRow.Cells[0].Value);
 
-                frmEdit update = new frmEdit(itemSelected);
+                frmEdit update = new frmEdit(itemSelecionado);
                 update.ShowDialog();
                 CarregaDgvTodoItem();
             }
         }
-
-
-        //APIWEB 3- método para deletar um TodoItem via GET (DeleteSync) através de um id no URL
-        //Sem uso
-        private string HTTPStringDel(string uri)
-        {
-            object Resultado = null;
-            try
-            {
-
-                using (HttpClient client = new HttpClient())
-                {
-                    //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ChaveAcesso);
-
-                    // Json de Response //
-                    var response = client.DeleteAsync(new Uri(uri)).Result;
-
-
-                    Resultado = JsonConvert.DeserializeObject<string>(response.Content.ReadAsStringAsync().Result);
-                    //Resultado = response.Content.ReadAsStringAsync().Result;
-
-
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        if (Resultado != null)
-                        {
-                            return Resultado.ToString();
-                        }
-                        else
-                        {
-                            return "Resultado é == a null: " + Resultado;
-                        }
-
-                    }
-                    else
-                    {
-                        MessageBox.Show(Resultado.ToString(), "Erro : IsSuccessStautosCode deu false", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-            catch (HttpRequestException e)
-            {
-                MessageBox.Show("Ocorreu um erro inesperado na chamada http: " + e.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            return Resultado.ToString();
-
-        }
-
-        //APIWEB 2- método para inserir um TodoItem via POST
-        private string HTTPString(HttpContent conteudo, string uri)
-        {
-            object Resultado = null;
-            try
-            {
-
-                using (HttpClient client = new HttpClient())
-                {
-                    //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ChaveAcesso);
-
-                    // Json de Response //
-                    var response = client.PostAsync(new Uri(uri), conteudo).Result;
-
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        Resultado = JsonConvert.DeserializeObject<string>(response.Content.ReadAsStringAsync().Result);
-                        //Resultado = response.Content.ReadAsStringAsync().Result;
-
-                        if (Resultado != null)
-                        {
-                            return "Resultado é != de null: " + Resultado;
-                        }
-                        else
-                        {
-                            return "Resultado é == a null: " + Resultado;
-                        }
-
-                    }
-                    else
-                    {
-                        MessageBox.Show(Resultado.ToString(), "Erro : IsSuccessStautosCode deu false", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-            catch (HttpRequestException e)
-            {
-                MessageBox.Show("Ocorreu um erro inesperado na chamada http: " + e.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            return Resultado.ToString();
-
-        }
-
-        //APIWEB 1- método para buscar um List<T> via POST sem parâmetro
-        public static List<T> HTTPListar<T>(string Uri)
-        {
-            //Lista genérica
-            List<T> Lista = null;
-            try
-            {
-
-                using (HttpClient client = new HttpClient())
-                {
-                    //Como no Controller é HttpGet sem envio de parâmetro, basta enviar a URL do caminho para 
-                    //retornar o resultado esperado.
-                    var response = client.PostAsync(new Uri(Uri), null).Result;
-                    
-                    //Se deu certo a busca acima
-                    if (response.IsSuccessStatusCode)
-                    {
-                        //Pegar o resultado do método GetTodoItems no Controller.
-                        //Este método retorna uma IEnumerable<T> que neste caso é um List<TodoItem>
-                        //Porém, armazenando num List<T> para reaproveitamento de código
-                        Lista = JsonConvert.DeserializeObject<List<T>>(response.Content.ReadAsStringAsync().Result);
-                    }
-                    else
-                    {
-                        //var erro = JsonConvert.DeserializeObject<string>(response.Content.ReadAsStringAsync().Result);
-                        var erro = response.Content.ReadAsStringAsync().Result;
-                        MessageBox.Show(erro, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-            catch (HttpRequestException e)
-            {
-                MessageBox.Show("Ocorreu um erro inesperado na chamada http: " + e.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            return Lista;
-
-        }
-
 
         //Métodos para carregamento, formatação e verificação de linha selecionada.
         private void FormataDgvTodoItem()
@@ -216,17 +91,19 @@ namespace TodoWinForm
         }
         private void CarregaDgvTodoItem()
         {
-            //Montando uma string com o endereço do servidor (API) e o caminho URL que deverá "executar"
-            Uri = API + @"/api/TodoItems/" + (int)BoTodoItem.Rotas.Pesquisar;
+            try
+            {
+                todoItems = new BoTodoItem().BuscarTodoItems();
 
-            //O método HTTPListar é genérico, retorna uma lista do tipo que você quiser.
-            //Como é via Get (Controller) e não tem um filtro para busca, só é enviado a URL.
-            todoItems = HTTPListar<TodoItem>(Uri);
-
-
-            //ConvertItemData é um objeto do tipo ConvertListToDataTable (Classe abaixo)
-            dgvTodoItems.DataSource = ConvertItemData.ConvertToDataTable(todoItems);
-            FormataDgvTodoItem();
+                //ConvertItemData é um objeto do tipo ConvertListToDataTable (Classe abaixo)
+                dgvTodoItems.DataSource = ConvertItemData.ConvertToDataTable(todoItems);
+                FormataDgvTodoItem();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+           
         }
         private bool VerificaItemSelDgv()
         {
@@ -246,7 +123,6 @@ namespace TodoWinForm
         }
 
     }
-
 
     //Classe para converter um List<T> para DataTable, deste modo, um jeito simples de incluir num DataSource
     public class ConvertListToDataTable<T>

@@ -1,13 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Configuration;
 using System.Windows.Forms;
 
 namespace TodoWinForm
 {
     static class Program
     {
+        /// <summary>
+        /// Variável somente leitura que recupera a URL da WebAPI
+        /// </summary>
+        public static readonly string API = ConfigurationManager.AppSettings["BaseAddress"];
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
