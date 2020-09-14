@@ -1,4 +1,6 @@
 .vs/
+TodoApi/bin/
+TodoApi/obj/
 TodoApiFW/bin/
 TodoApiFW/obj/
 TodoLayers/bin/
